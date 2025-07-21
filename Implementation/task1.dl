@@ -1,0 +1,107 @@
+    //1. Which books have more than 50,000 reviews on Amazon and are part of a book series?
+    Q1(Title, Author, Reviews) :-
+    AmazonBestsellers(_,_,title,no_of_reviews,_,author,_,_,_true),
+    no_of_reviews > 50,000
+
+    
+    /2. Which books published before 2010 are bestsellers on Kindle?
+    Q2(Title, Author, PublishDate) :-
+    KindleStore(_,title,author,_,_,_,_,_,_,_,_,true,_,_,publishDate,_),
+    publishDate < 2010-01-01
+
+    
+    /3. Which books with a Goodreads average rating of 4.5 or higher are also available on the Kindle platform?
+    Q3(Title, Author, PublishDate) :-
+    GoodreadsAwards(_,_,_,Title,Author,TotalAvgRating,_,_,_,_,_,_,_),
+    KindleStore(_,title,author,_,_,,_,_,_,_,_,_,_,_,true,_,_),
+    Total_Avg_Rating > = 4.5
+
+    /4. What is the distribution of prices (grouped into ranges) for books that appear in both the Amazon Bestsellers and Kindle?
+    Q4(PriceRange, BookCount, AvgRating) :-
+    AmazonBestsellers(Title, Author, _, _, _, _, _, _, _, _),
+    KindleStore(Title, Author, Price, Rating, _, _, _, _, _, _,_, _, _),
+    PriceRange = CASE
+    WHEN Price < 5 THEN "0-5"
+    WHEN Price BETWEEN 5 AND 10 THEN "5-10" 
+    WHEN Price > 10 THEN "10+"
+    END,
+    GROUP BY(PriceRange),
+    BookCount = COUNT(Title),
+    AvgRating = AVG(Rating)
+
+    /5. Which Amazon bestsellers are also available in the Kindle store, and how do their prices compare?
+    Q5(Title, Author, AmazonRank, AmazonPrice, KindlePrice, PriceDifference) :-
+    AmazonBestsellers(Title, Author, AmazonRank, AmazonPrice, _, _, _, _, _, _),
+    KindleStore(Title, Author, KindlePrice, _, _, _, _, _, _, _, _, _, _),
+    AmazonPrice > 0,
+    KindlePrice > 0,
+    PriceDifference = AmazonPrice - KindlePrice,
+    AmazonRank <= 100,
+    ORDER BY(AmazonRank)
+
+
+    /6. Which Goodreads award-winning books are available in the Kindle store, and what are their ratings on both platforms?
+    Q6(Title, Author, AwardCategory, GoodreadsRating, KindleRating, RatingDifference) :-
+    GoodreadsAwards(Title, Author, AwardCategory, GoodreadsRating, _, _, _, _, _),
+    KindleStore(Title, Author, _, KindleRating, _, _, _, _, _, _, _, _, _),
+    GoodreadsRating > 0,
+    KindleRating > 0,
+    RatingDifference = GoodreadsRating - KindleRating,
+    ORDER BY(RatingDifference DESC)
+
+
+    /7. What are the common genres or categories between the top-selling Amazon books and the Goodreads Choice Awards 2023 winners?
+    Q7(Gernre) :-
+    AmazonBestsellers(BookID1, _, _, Genre, Year, _, _, _),
+    GoodreadsRating(BookID2, _, _, Genre, 2023, _, _, _, _, _),
+    Year >= 2009, 
+    Year =< 2021.
+
+
+    /8. Do Goodreads Choice Award-winning books (2023) have higher average Kindle prices than non-award-winning books in the 2023 Amazon Kindle dataset?
+    Q_AvgPrice_Winner(AVG(Price)):-
+    AmazonBestsellers(BookID, Title, _, _, Price, _, 2023, _),
+    GoodreadsRating(BookID, Title, _, _, 2023, _, _, _, _).
+
+    Q_AvgPrice_NonWinner(AVG(Price)) :-
+    AmazonKindle(BookID, Title, _, _, Price, _, 2023, _),
+    NOT Goodreads(BookID, Title, _, _, 2023, _, _, _, _).
+
+    Q_Compare(AwardAvg, NonAwardAvg) :-
+    Q_AvgPrice_Winner(AwardAvg),
+    Q_AvgPrice_NonWinner(NonAwardAvg),
+    AwardAvg > NonAwardAvg.
+    
+    
+    /9. Which books listed on the Amazon Kindle dataset have the highest rating values but did not win a Goodreads Choice Award in 2023?
+    Q9(BookID, Title, Author, Rating) :-
+    AmazonKindle(BookID, Title, Author, _, _, Rating, 2023, _),
+    Rating > 4.5,
+    NOT Goodreads(BookID, Title, Author, _, 2023, _, _, _, _).
+    
+
+    /10. Which "Fiction" books are available in "Paperback" format in both the Goodreads Awards and Amazon Bestsellers?
+    Q10(Title, Author, Year) :-
+    GoodreadsAwards(Title, Author, Genre, CoverType, Year, _, _, _, _),
+    AmazonBestsellers(Title, Author, _, _, _, _, _, Edition),
+    Genre = "Fiction",
+    CoverType = "Paperback",
+    Edition = "Paperback",
+    ORDER BY(Year ASC)    
+    
+     
+   /11.
+    Q11(Title, Author, Price) :-
+    KindleStore(Title, Author, Genre, Rating, Price, Seller),
+    Price < 10,
+    Seller = "Amazon.com Services LLC",
+    ORDER BY(Price DESC).   
+   
+   /12. 
+    Q12(Title, Author, Genre, AmazonRank) :-
+    GoodreadsAwards(Title, Author, Genre, _,  _, _, Year),
+    Year = 2023,
+    AmazonBestsellers(Title, Author, AmazonRank,  _, _, _, _),
+    AmazonRank =< 50,
+    ORDER BY(AmazonRank ASC).
+
