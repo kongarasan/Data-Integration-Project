@@ -1,0 +1,7 @@
+Unnamed: 0,price,ranks,title,no_of_reviews,ratings,author,cover_type,year,genre
+title,0,0,0,1,0,0,0,0,0,0
+author,0,0,0,0,0,0,1,0,0,0
+rating,0,0,0,0,0,1,0,0,0,0
+review_count,0,0,0,0,0,0,0,0,0,0
+price,0,1,0,0,0,0,0,0,0,0
+publication_year,0,0,0,0,0,0,0,0,0,0
