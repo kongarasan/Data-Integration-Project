@@ -1,0 +1,7 @@
+asin,title,author,soldBy,imgUrl,productURL,stars,reviews,price,isKindleUnlimited,category_id,isBestSeller,isEditorsPick,isGoodReadsChoice,publishedDate,category_name
+title,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+author,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+rating,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+review_count,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+price,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0
+publication_year,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
